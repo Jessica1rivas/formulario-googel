@@ -6,7 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Formulario de contacto</title>
     <link rel="stylesheet" href="assets/style.css">
-    <!-- Librería SweetAlert2 para modales animados con check -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 
@@ -26,7 +25,7 @@
                 <div class="campo" id="grupo-nombre">
                     <label for="nombre">Nombre completo</label>
                     <input type="text" id="nombre" name="nombre" placeholder="Ingresa tu nombre y apellido"
-                        maxlength="100" autocomplete="name" spellcheck="false" required>
+                        maxlength="100" autocomplete="name" spellcheck="true" lang="es" required>
                     <span class="mensaje-error" id="error-nombre" aria-live="polite"></span>
                 </div>
 
@@ -45,6 +44,14 @@
                     <textarea id="descripcion" name="descripcion" lang="es" spellcheck="true"
                         placeholder="Escribe aquí los detalles de tu mensaje..." maxlength="5000" required></textarea>
                     <span class="mensaje-error" id="error-descripcion" aria-live="polite"></span>
+
+                    <!-- Panel de revisión ortográfica y tildes en tiempo real -->
+                    <div class="panel-ortografia oculto" id="panelOrtografia" aria-live="polite">
+                        <div class="ortografia-cabecera">
+                            <span id="estadoOrtografia">Revisando ortografía y tildes...</span>
+                        </div>
+                        <ul class="lista-errores-ortografia" id="listaOrtografia"></ul>
+                    </div>
                 </div>
 
                 <!-- Campo oculto antispam -->
