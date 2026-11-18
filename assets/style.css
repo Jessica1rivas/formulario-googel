@@ -1,292 +1,734 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap');
+
 * {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
 body {
-  font-family: "Segoe UI", Arial, sans-serif;
-  background: #f1f4f9;
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 25px;
+    font-family: 'Poppins', 'Segoe UI', Arial, sans-serif;
+    background-color: #6B6EB8;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 25px;
+    position: relative;
+    overflow-x: hidden;
 }
 
+/* =========================================================
+   FORMAS GEOMÉTRICAS GRANDES DEL FONDO
+   ========================================================= */
+.fondo-formas {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    overflow: hidden;
+    z-index: 0;
+}
+
+.forma-cruz-amarilla {
+    position: absolute;
+    top: -65px;
+    right: -45px;
+    width: 260px;
+    height: 260px;
+    transform: rotate(35deg);
+}
+
+.forma-cruz-amarilla::before,
+.forma-cruz-amarilla::after {
+    content: "";
+    position: absolute;
+    background-color: #FDE058;
+    border-radius: 36px;
+}
+
+.forma-cruz-amarilla::before {
+    width: 260px;
+    height: 76px;
+    top: 92px;
+    left: 0;
+}
+
+.forma-cruz-amarilla::after {
+    width: 76px;
+    height: 260px;
+    top: 0;
+    left: 92px;
+}
+
+.forma-aro-celeste {
+    position: absolute;
+    bottom: -135px;
+    left: -115px;
+    width: 360px;
+    height: 360px;
+    border: 68px solid #59BCE9;
+    border-radius: 50%;
+}
+
+/* =========================================================
+   TARJETA BLANCA PRINCIPAL (SIN z-index QUE ATRAPE AL HIJO)
+   ========================================================= */
 .contenedor {
-  width: 100%;
-  max-width: 560px;
+    width: 100%;
+    max-width: 470px;
+    position: relative;
 }
 
 .formulario {
-  background: #ffffff;
-  padding: 35px;
-  border-radius: 16px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.07);
+    position: relative;
+    width: 100%;
+    background: #ffffff;
+    padding: 42px 46px 40px;
+    border-radius: 26px;
+    box-shadow: 0 22px 45px rgba(27, 29, 68, 0.25);
+}
+
+/* Figuras geométricas decorativas en la tarjeta blanca */
+.deco {
+    position: absolute;
+    pointer-events: none;
+    user-select: none;
+}
+
+.deco-x-1 {
+    top: 40px;
+    left: 68px;
+    font-size: 22px;
+    color: #1E243B;
+    transform: rotate(-18deg);
+}
+
+.deco-o-1 {
+    top: 45px;
+    right: 92px;
+    width: 17px;
+    height: 17px;
+    border: 4px solid #FDE058;
+    border-radius: 50%;
+}
+
+.deco-x-2 {
+    top: 105px;
+    right: 32px;
+    font-size: 20px;
+    color: #1E243B;
+    transform: rotate(22deg);
+}
+
+.deco-plus-1 {
+    top: 185px;
+    left: 20px;
+    font-size: 24px;
+    font-weight: 700;
+    color: #59BCE9;
+}
+
+.deco-o-2 {
+    top: 192px;
+    right: 26px;
+    width: 16px;
+    height: 16px;
+    border: 4px solid #FDE058;
+    border-radius: 50%;
+}
+
+.deco-o-3 {
+    top: 295px;
+    left: 20px;
+    width: 16px;
+    height: 16px;
+    border: 4px solid #FDE058;
+    border-radius: 50%;
+}
+
+.deco-x-3 {
+    top: 292px;
+    right: 32px;
+    font-size: 13px;
+    color: #1E243B;
+    transform: rotate(15deg);
+}
+
+.deco-x-4 {
+    bottom: 92px;
+    left: 26px;
+    font-size: 13px;
+    color: #1E243B;
+    transform: rotate(-15deg);
+}
+
+.deco-plus-2 {
+    bottom: 66px;
+    right: 18px;
+    font-size: 24px;
+    font-weight: 700;
+    color: #59BCE9;
 }
 
 .encabezado {
-  text-align: center;
-  margin-bottom: 28px;
+    text-align: center;
+    margin-bottom: 28px;
 }
 
 .encabezado h1 {
-  color: #1e293b;
-  font-size: 28px;
-  margin-bottom: 8px;
+    color: #212542;
+    font-size: 27px;
+    font-weight: 800;
+    letter-spacing: -0.3px;
 }
 
-.encabezado p {
-  color: #64748b;
-  font-size: 14px;
-  line-height: 1.5;
-}
-
+/* =========================================================
+   CAMPOS TIPO PÍLDORA GRIS SUAVE CON ICONOS INTERNOS
+   ========================================================= */
 .campo {
-  margin-bottom: 20px;
+    margin-bottom: 16px;
+    border-radius: 18px;
+    transition: background-color 0.25s, box-shadow 0.25s;
 }
 
-.label-fila {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 8px;
+.input-pildora {
+    position: relative;
+    display: flex;
+    align-items: center;
+    background: #EFF2F6;
+    border: 2px solid transparent;
+    border-radius: 999px;
+    padding: 0 18px;
+    transition: border-color 0.25s, background-color 0.25s, box-shadow 0.25s;
 }
 
-.label-fila label {
-  margin-bottom: 0;
+.input-pildora:focus-within {
+    background: #ffffff;
+    border-color: #6B6EB8;
+    box-shadow: 0 0 0 4px rgba(107, 110, 184, 0.15);
 }
 
-.campo label {
-  display: block;
-  color: #334155;
-  font-size: 14px;
-  font-weight: 600;
-  margin-bottom: 8px;
+.icono-campo {
+    color: #9CA3AF;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-right: 12px;
+}
+
+.input-pildora input {
+    width: 100%;
+    padding: 14px 4px;
+    border: none;
+    background: transparent;
+    outline: none;
+    font-size: 14px;
+    font-family: inherit;
+    color: #212542;
+}
+
+.input-pildora input::placeholder,
+.editor-enriquecido textarea::placeholder {
+    color: #94A3B8;
+}
+
+.meta-descripcion {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 6px;
+    padding: 0 6px;
+}
+
+.badge-ortografia {
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 9px;
+    border-radius: 99px;
+    display: none;
+}
+
+.badge-ortografia.revisando {
+    display: inline-block;
+    background: #e2e8f0;
+    color: #475569;
+}
+
+.badge-ortografia.ok {
+    display: inline-block;
+    background: #dcfce7;
+    color: #15803d;
+}
+
+.badge-ortografia.alerta {
+    display: inline-block;
+    background: #fee2e2;
+    color: #b91c1c;
 }
 
 .contador {
-  font-size: 12px;
-  color: #94a3b8;
+    font-size: 11.5px;
+    font-weight: 600;
+    color: #64748b;
+    transition: color 0.2s;
 }
 
-.campo input,
-.campo textarea {
-  width: 100%;
-  padding: 13px 15px;
-  border: 1.5px solid #cbd5e1;
-  border-radius: 9px;
-  outline: none;
-  font-size: 14px;
-  font-family: inherit;
-  color: #1e293b;
-  background: #ffffff;
-  transition:
-    border-color 0.25s,
-    box-shadow 0.25s,
-    background-color 0.25s;
+.contador.excedido {
+    color: #dc2626;
+    font-weight: 700;
 }
 
-.campo input:focus,
-.campo textarea:focus {
-  border-color: #4568dc;
-  box-shadow: 0 0 0 3px rgba(69, 104, 220, 0.14);
+/* Textarea redondeado con icono y capa espejo */
+.editor-enriquecido {
+    position: relative;
+    width: 100%;
+    border: 2px solid transparent;
+    border-radius: 22px;
+    background: #EFF2F6;
+    overflow: hidden;
+    transition: border-color 0.25s, background-color 0.25s, box-shadow 0.25s;
 }
 
-.campo textarea {
-  height: 145px;
-  resize: vertical;
-  line-height: 1.55;
+.editor-enriquecido:focus-within {
+    background: #ffffff;
+    border-color: #6B6EB8;
+    box-shadow: 0 0 0 4px rgba(107, 110, 184, 0.15);
+}
+
+.icono-textarea {
+    position: absolute;
+    top: 15px;
+    left: 18px;
+    z-index: 3;
+    pointer-events: none;
+}
+
+.capa-resaltado,
+.editor-enriquecido textarea {
+    width: 100%;
+    height: 132px;
+    padding: 14px 18px 14px 46px;
+    font-family: 'Poppins', 'Segoe UI', Arial, sans-serif;
+    font-size: 14px;
+    line-height: 1.55;
+    letter-spacing: normal;
+    word-wrap: break-word;
+    white-space: pre-wrap;
+    overflow-wrap: break-word;
+    border: none;
+    outline: none;
+}
+
+.capa-resaltado {
+    position: absolute;
+    inset: 0;
+    color: transparent;
+    background: transparent;
+    pointer-events: none;
+    overflow-y: auto;
+    z-index: 1;
+}
+
+.capa-resaltado mark.marca-error {
+    color: transparent;
+    background-color: rgba(239, 68, 68, 0.22);
+    border-bottom: 2px solid #dc2626;
+    border-radius: 3px;
+}
+
+.editor-enriquecido textarea {
+    position: relative;
+    z-index: 2;
+    color: #212542;
+    background: transparent;
+    caret-color: #212542;
+    resize: vertical;
+    display: block;
 }
 
 /* Estados de validación */
-.campo.invalido input,
-.campo.invalido textarea {
-  border-color: #dc2626;
-  background-color: #fef2f2;
+.campo.invalido .input-pildora,
+.campo.invalido .editor-enriquecido {
+    border-color: #dc2626;
+    background-color: #fef2f2;
 }
 
-.campo.invalido input:focus,
-.campo.invalido textarea:focus {
-  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.14);
-}
-
-.campo.valido input,
-.campo.valido textarea {
-  border-color: #16a34a;
+.campo.valido .input-pildora,
+.campo.valido .editor-enriquecido {
+    border-color: #22c55e;
 }
 
 .mensaje-error {
-  display: block;
-  color: #dc2626;
-  font-size: 12.5px;
-  font-weight: 500;
-  margin-top: 6px;
-  min-height: 16px;
+    display: block;
+    color: #dc2626;
+    font-size: 12px;
+    font-weight: 500;
+    margin-top: 5px;
+    padding-left: 14px;
+    min-height: 15px;
 }
 
-/* Panel de corrección ortográfica en tiempo real */
-.panel-ortografia {
-  margin-top: 8px;
-  padding: 12px 14px;
-  border-radius: 9px;
-  border: 1px solid #fecaca;
-  background: #fff5f5;
-  font-size: 13px;
+/* Botón principal estilo píldora con flecha amarilla */
+.btn-enviar-estilo {
+    width: 100%;
+    padding: 14px 20px;
+    background: #6B6EB8;
+    color: #ffffff;
+    border: none;
+    border-radius: 999px;
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 0.6px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    box-shadow: 0 8px 20px rgba(107, 110, 184, 0.35);
+    transition: background-color 0.25s, transform 0.15s;
+    margin-top: 6px;
 }
 
-.panel-ortografia.oculto {
-  display: none;
+.btn-enviar-estilo:hover {
+    background: #595ca3;
+    transform: translateY(-1px);
 }
 
-.panel-ortografia.revisando {
-  border-color: #cbd5e1;
-  background: #f8fafc;
-  color: #475569;
+.btn-enviar-estilo:active {
+    transform: scale(0.99);
 }
 
-.panel-ortografia.limpio {
-  border-color: #bbf7d0;
-  background: #f0fdf4;
-  color: #15803d;
+.btn-enviar-estilo:disabled {
+    opacity: 0.65;
+    cursor: not-allowed;
 }
 
-.ortografia-cabecera {
-  font-weight: 600;
-  color: #b91c1c;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.panel-ortografia.revisando .ortografia-cabecera {
-  color: #475569;
-}
-
-.panel-ortografia.limpio .ortografia-cabecera {
-  color: #15803d;
-}
-
-.lista-errores-ortografia {
-  list-style: none;
-  margin-top: 8px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.lista-errores-ortografia:empty {
-  display: none;
-}
-
-.item-ortografia {
-  background: #ffffff;
-  border: 1px solid #fee2e2;
-  border-radius: 7px;
-  padding: 8px 10px;
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-}
-
-.detalle-palabra {
-  color: #334155;
-  font-size: 12.5px;
-}
-
-.palabra-mal {
-  color: #dc2626;
-  font-weight: 700;
-  text-decoration: wavy underline #dc2626;
-  background: #fee2e2;
-  padding: 1px 5px;
-  border-radius: 4px;
-}
-
-.sugerencias-chips {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  align-items: center;
-}
-
-.btn-sugerencia {
-  background: #16a34a;
-  color: #ffffff;
-  border: none;
-  border-radius: 5px;
-  padding: 4px 9px;
-  font-size: 12px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background 0.2s;
-}
-
-.btn-sugerencia:hover {
-  background: #15803d;
-}
-
-.btn-ignorar {
-  background: transparent;
-  color: #64748b;
-  border: 1px solid #cbd5e1;
-  border-radius: 5px;
-  padding: 3px 8px;
-  font-size: 11.5px;
-  cursor: pointer;
-}
-
-.btn-ignorar:hover {
-  background: #f1f5f9;
-  color: #334155;
-}
-
-button[type="submit"] {
-  width: 100%;
-  padding: 14px;
-  background: #4568dc;
-  color: #ffffff;
-  border: none;
-  border-radius: 9px;
-  font-size: 15px;
-  font-weight: 600;
-  cursor: pointer;
-  transition:
-    background-color 0.25s,
-    transform 0.1s;
-  margin-top: 6px;
-}
-
-button[type="submit"]:hover {
-  background: #3453bd;
-}
-
-button[type="submit"]:active {
-  transform: scale(0.99);
-}
-
-button[type="submit"]:disabled {
-  opacity: 0.65;
-  cursor: not-allowed;
+.flecha-amarilla {
+    color: #FDE058;
+    font-size: 19px;
+    font-weight: 700;
+    line-height: 1;
 }
 
 .campo-oculto {
-  position: absolute;
-  left: -9999px;
+    position: absolute;
+    left: -9999px;
+}
+
+/* =========================================================
+   BOTÓN DE AYUDA Y GUÍA PASO A PASO (OVERLAY CORREGIDO)
+   ========================================================= */
+.btn-ayuda-flotante {
+    position: fixed;
+    top: 18px;
+    left: 18px;
+    z-index: 900;
+    background: #212542;
+    color: #ffffff;
+    border: 1.5px solid rgba(255, 255, 255, 0.2);
+    border-radius: 999px;
+    padding: 9px 16px;
+    font-size: 12.5px;
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.22);
+    transition: background 0.2s, transform 0.15s;
+}
+
+.btn-ayuda-flotante:hover {
+    background: #32375e;
+    transform: translateY(-1px);
+}
+
+.tour-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 19, 42, 0.78);
+    z-index: 1000;
+    transition: opacity 0.25s ease;
+}
+
+.tour-overlay.oculto,
+.tour-tooltip.oculto {
+    display: none;
+}
+
+/* El campo activo ahora queda nítido y brillante POR ENCIMA del fondo negro */
+.tour-elemento-destacado {
+    position: relative !important;
+    z-index: 1005 !important;
+    background-color: #ffffff !important;
+    padding: 10px 10px 4px !important;
+    border-radius: 22px !important;
+    box-shadow: 0 0 0 4px #FDE058, 0 18px 40px rgba(0, 0, 0, 0.55) !important;
+}
+
+button.tour-elemento-destacado {
+    background-color: #6B6EB8 !important;
+    border-radius: 999px !important;
+    padding: 14px 20px !important;
+}
+
+.tour-tooltip {
+    position: fixed;
+    z-index: 1010;
+    width: 310px;
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 18px;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.35);
+    border: 2px solid #FDE058;
+    animation: saltoTooltip 0.22s ease-out;
+}
+
+@keyframes saltoTooltip {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.tour-cabecera {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.tour-paso-badge {
+    background: #eef2ff;
+    color: #6B6EB8;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 99px;
+}
+
+.tour-cerrar {
+    background: transparent;
+    border: none;
+    color: #64748b;
+    font-size: 20px;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.tour-tooltip h3 {
+    font-size: 15.5px;
+    color: #212542;
+    margin-bottom: 6px;
+}
+
+.tour-tooltip p {
+    font-size: 13px;
+    color: #475569;
+    line-height: 1.45;
+    margin-bottom: 14px;
+}
+
+.tour-acciones {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.tour-btn-saltar {
+    background: transparent;
+    border: none;
+    color: #64748b;
+    font-size: 12.5px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.tour-btn-siguiente {
+    background: #6B6EB8;
+    color: #ffffff;
+    border: none;
+    border-radius: 99px;
+    padding: 8px 15px;
+    font-size: 12.5px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.tour-btn-siguiente:hover {
+    background: #595ca3;
+}
+
+/* =========================================================
+   PANEL ORTOGRÁFICO FLOTANTE (SOBREPUESTO, NO MUEVE NADA)
+   ========================================================= */
+.panel-lateral-flotante {
+    position: fixed;
+    top: 22px;
+    right: 22px;
+    width: 330px;
+    max-width: calc(100vw - 44px);
+    background: #ffffff;
+    border-radius: 16px;
+    border: 1.5px solid #fecaca;
+    box-shadow: 0 14px 35px rgba(15, 23, 42, 0.22);
+    z-index: 850;
+    overflow: hidden;
+    animation: entrarFlotante 0.25s ease-out;
+}
+
+.panel-lateral-flotante.oculto {
+    display: none;
+}
+
+@keyframes entrarFlotante {
+    from {
+        opacity: 0;
+        transform: translateX(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.lateral-cabecera {
+    background: #fef2f2;
+    border-bottom: 1px solid #fecaca;
+    padding: 13px 15px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.lateral-cabecera h2 {
+    font-size: 13.5px;
+    color: #991b1b;
+    font-weight: 700;
+}
+
+.lateral-cabecera p {
+    font-size: 11px;
+    color: #b91c1c;
+    margin-top: 2px;
+}
+
+.lateral-botones {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.btn-corregir-todo {
+    background: #16a34a;
+    color: #ffffff;
+    border: none;
+    border-radius: 6px;
+    padding: 6px 10px;
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.btn-cerrar-panel {
+    background: transparent;
+    border: none;
+    color: #991b1b;
+    font-size: 20px;
+    line-height: 1;
+    cursor: pointer;
+    padding: 0 4px;
+}
+
+.lateral-cuerpo {
+    padding: 12px;
+    max-height: 340px;
+    overflow-y: auto;
+}
+
+.lista-errores-ortografia {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+}
+
+.item-ortografia {
+    background: #fffafa;
+    border: 1px solid #fee2e2;
+    border-left: 4px solid #dc2626;
+    border-radius: 8px;
+    padding: 9px 11px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.palabra-mal {
+    color: #b91c1c;
+    font-weight: 700;
+    font-size: 12.5px;
+    background: rgba(239, 68, 68, 0.16);
+    border-bottom: 2px solid #dc2626;
+    padding: 1px 6px;
+    border-radius: 4px;
+    align-self: flex-start;
+}
+
+.explicacion-error {
+    color: #475569;
+    font-size: 11.5px;
+    line-height: 1.35;
+}
+
+.sugerencias-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.btn-sugerencia {
+    background: #16a34a;
+    color: #ffffff;
+    border: none;
+    border-radius: 5px;
+    padding: 4px 9px;
+    font-size: 11.5px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.btn-ignorar {
+    background: #ffffff;
+    color: #64748b;
+    border: 1px solid #cbd5e1;
+    border-radius: 5px;
+    padding: 3px 8px;
+    font-size: 11px;
+    cursor: pointer;
 }
 
 .swal2-popup {
-  border-radius: 16px !important;
-  font-family: "Segoe UI", Arial, sans-serif !important;
+    border-radius: 20px !important;
+    font-family: 'Poppins', 'Segoe UI', Arial, sans-serif !important;
 }
 
-@media (max-width: 500px) {
-  .formulario {
-    padding: 25px 20px;
-  }
+@media (max-width: 520px) {
+    .formulario {
+        padding: 34px 22px 32px;
+    }
 
-  .encabezado h1 {
-    font-size: 24px;
-  }
+    .panel-lateral-flotante {
+        top: auto;
+        bottom: 15px;
+        right: 15px;
+        left: 15px;
+        width: auto;
+    }
 }
