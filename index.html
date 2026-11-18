@@ -4,10 +4,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>Formulario de contacto</title>
-
     <link rel="stylesheet" href="assets/style.css">
+    <!-- Librería SweetAlert2 para modales animados con check -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 
 <body>
@@ -18,32 +18,33 @@
 
             <div class="encabezado">
                 <h1>Contáctanos</h1>
-                <p>Envíanos un mensaje y nos pondremos en contacto contigo.</p>
+                <p>Envíanos tu consulta y nos pondremos en contacto contigo.</p>
             </div>
 
-            <form id="formularioContacto">
+            <form id="formularioContacto" novalidate>
 
-                <div class="campo">
+                <div class="campo" id="grupo-nombre">
                     <label for="nombre">Nombre completo</label>
-                    <input type="text" id="nombre" name="nombre" placeholder="Ingresa tu nombre" maxlength="100"
-                        required>
+                    <input type="text" id="nombre" name="nombre" placeholder="Ingresa tu nombre y apellido"
+                        maxlength="100" autocomplete="name" spellcheck="false" required>
+                    <span class="mensaje-error" id="error-nombre" aria-live="polite"></span>
                 </div>
 
-                <div class="campo">
+                <div class="campo" id="grupo-correo">
                     <label for="correo">Correo electrónico</label>
-                    <input type="email" id="correo" name="correo" placeholder="ejemplo@gmail.com" required>
+                    <input type="email" id="correo" name="correo" placeholder="ejemplo@gmail.com" autocomplete="email"
+                        spellcheck="false" required>
+                    <span class="mensaje-error" id="error-correo" aria-live="polite"></span>
                 </div>
 
-                <div class="campo">
-                    <label for="asunto">Asunto</label>
-                    <input type="text" id="asunto" name="asunto" placeholder="Motivo del mensaje" maxlength="150"
-                        required>
-                </div>
-
-                <div class="campo">
-                    <label for="mensaje">Mensaje</label>
-                    <textarea id="mensaje" name="mensaje" placeholder="Escribe tu mensaje..." maxlength="5000"
-                        required></textarea>
+                <div class="campo" id="grupo-descripcion">
+                    <div class="label-fila">
+                        <label for="descripcion">Descripción</label>
+                        <span class="contador" id="contadorDescripcion">0 / 5000</span>
+                    </div>
+                    <textarea id="descripcion" name="descripcion" lang="es" spellcheck="true"
+                        placeholder="Escribe aquí los detalles de tu mensaje..." maxlength="5000" required></textarea>
+                    <span class="mensaje-error" id="error-descripcion" aria-live="polite"></span>
                 </div>
 
                 <!-- Campo oculto antispam -->
@@ -55,8 +56,6 @@
                 <button type="submit" id="btnEnviar">
                     Enviar mensaje
                 </button>
-
-                <p id="estadoMensaje" role="status" aria-live="polite"></p>
 
             </form>
 
