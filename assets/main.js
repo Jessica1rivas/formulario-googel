@@ -1,5 +1,5 @@
 const URL_SCRIPT =
-  "https://script.google.com/macros/s/AKfycbyVZszd6gD-4O-nGloge0EBWTi9jHTPrJMHeYGdf4unnoNNDZhZ6TzTu4A9TCLNieib/exec";
+  "https://script.google.com/macros/s/AKfycbwg6OWKV-I3Fu3GOl8xsOa-rEC9lNC_3G0ICm4CRdwwFvnSh0J9XIpO0WId6lyfNGLM/exec";
 
 const formulario = document.getElementById("formularioContacto");
 const boton = document.getElementById("btnEnviar");
@@ -8,6 +8,15 @@ const inputNombre = document.getElementById("nombre");
 const inputCorreo = document.getElementById("correo");
 const inputDescripcion = document.getElementById("descripcion");
 const contadorDescripcion = document.getElementById("contadorDescripcion");
+
+const panelOrtografia = document.getElementById("panelOrtografia");
+const estadoOrtografia = document.getElementById("estadoOrtografia");
+const listaOrtografia = document.getElementById("listaOrtografia");
+
+let erroresOrtograficosActivos = [];
+let palabrasIgnoradas = new Set();
+let temporizadorOrtografia = null;
+let controladorAbort = null;
 
 const dominiosMalEscritos = {
   "gmial.com": "gmail.com",
@@ -23,7 +32,7 @@ const dominiosMalEscritos = {
   "yahoo.con": "yahoo.com",
 };
 
-function mostrarEstadoCampo(campoId, inputEl, mensajeError) {
+function mostrarEstadoCampo(campoId, mensajeError) {
   const grupo = document.getElementById(`grupo-${campoId}`);
   const spanError = document.getElementById(`error-${campoId}`);
 
@@ -44,35 +53,25 @@ function validarNombre() {
   const valor = inputNombre.value.trim();
 
   if (!valor) {
-    return mostrarEstadoCampo(
-      "nombre",
-      inputNombre,
-      "El nombre es obligatorio.",
-    );
+    return mostrarEstadoCampo("nombre", "El nombre es obligatorio.");
   }
   if (valor.length < 3) {
-    return mostrarEstadoCampo(
-      "nombre",
-      inputNombre,
-      "Escribe al menos 3 caracteres.",
-    );
+    return mostrarEstadoCampo("nombre", "Escribe al menos 3 caracteres.");
   }
   if (!/^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s'-]+$/.test(valor)) {
     return mostrarEstadoCampo(
       "nombre",
-      inputNombre,
       "El nombre solo debe contener letras y espacios (sin números ni símbolos).",
     );
   }
   if (/\s{2,}/.test(valor)) {
     return mostrarEstadoCampo(
       "nombre",
-      inputNombre,
       "Evita poner dobles espacios entre palabras.",
     );
   }
 
-  return mostrarEstadoCampo("nombre", inputNombre, "");
+  return mostrarEstadoCampo("nombre", "");
 }
 
 function validarCorreo() {
@@ -81,7 +80,6 @@ function validarCorreo() {
   if (!valor) {
     return mostrarEstadoCampo(
       "correo",
-      inputCorreo,
       "El correo electrónico es obligatorio.",
     );
   }
@@ -90,7 +88,6 @@ function validarCorreo() {
   if (!regexCorreo.test(valor)) {
     return mostrarEstadoCampo(
       "correo",
-      inputCorreo,
       "Formato inválido. Ejemplo válido: usuario@gmail.com",
     );
   }
@@ -99,52 +96,187 @@ function validarCorreo() {
   if (dominiosMalEscritos[dominio]) {
     return mostrarEstadoCampo(
       "correo",
-      inputCorreo,
       `¿Quisiste escribir @${dominiosMalEscritos[dominio]}? Revisa la ortografía del dominio.`,
     );
   }
 
-  return mostrarEstadoCampo("correo", inputCorreo, "");
+  return mostrarEstadoCampo("correo", "");
 }
 
-function validarDescripcion() {
-  const valor = inputDescripcion.value.trim();
-  contadorDescripcion.textContent = `${inputDescripcion.value.length} / 5000`;
+function validarDescripcionBasica() {
+  const texto = inputDescripcion.value;
+  const valor = texto.trim();
+  contadorDescripcion.textContent = `${texto.length} / 5000`;
 
   if (!valor) {
-    return mostrarEstadoCampo(
-      "descripcion",
-      inputDescripcion,
-      "La descripción es obligatoria.",
-    );
+    ocultarPanelOrtografia();
+    return mostrarEstadoCampo("descripcion", "La descripción es obligatoria.");
   }
   if (valor.length < 10) {
+    ocultarPanelOrtografia();
     return mostrarEstadoCampo(
       "descripcion",
-      inputDescripcion,
       `Escribe al menos 10 caracteres (llevas ${valor.length}).`,
     );
   }
   if (/(.)\1{5,}/.test(valor)) {
     return mostrarEstadoCampo(
       "descripcion",
-      inputDescripcion,
       "Evita repetir la misma letra demasiadas veces seguidas.",
     );
   }
 
-  return mostrarEstadoCampo("descripcion", inputDescripcion, "");
+  if (erroresOrtograficosActivos.length > 0) {
+    return mostrarEstadoCampo(
+      "descripcion",
+      `Corrige ${erroresOrtograficosActivos.length} error(es) de ortografía o tildes marcados abajo.`,
+    );
+  }
+
+  return mostrarEstadoCampo("descripcion", "");
 }
 
-// Validación en tiempo real mientras se escribe y al salir del campo
+function ocultarPanelOrtografia() {
+  erroresOrtograficosActivos = [];
+  panelOrtografia.classList.add("oculto");
+  listaOrtografia.innerHTML = "";
+}
+
+// Revisión ortográfica real en español (tildes, letras, gramática) con LanguageTool
+async function revisarOrtografiaEnTiempoReal() {
+  const texto = inputDescripcion.value;
+
+  if (texto.trim().length < 4) {
+    ocultarPanelOrtografia();
+    return;
+  }
+
+  if (controladorAbort) {
+    controladorAbort.abort();
+  }
+  controladorAbort = new AbortController();
+
+  panelOrtografia.classList.remove("oculto", "limpio");
+  panelOrtografia.classList.add("revisando");
+  estadoOrtografia.textContent = "Revisando ortografía y tildes...";
+
+  try {
+    const params = new URLSearchParams();
+    params.append("text", texto);
+    params.append("language", "es");
+
+    const respuesta = await fetch("https://api.languagetool.org/v2/check", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: params,
+      signal: controladorAbort.signal,
+    });
+
+    const data = await respuesta.json();
+    const coincidencias = (data.matches || []).filter((item) => {
+      const palabraOriginal = texto.substr(item.offset, item.length);
+      return !palabrasIgnoradas.has(palabraOriginal.toLowerCase());
+    });
+
+    erroresOrtograficosActivos = coincidencias;
+    renderizarErroresOrtograficos(texto, coincidencias);
+    validarDescripcionBasica();
+  } catch (err) {
+    if (err.name !== "AbortError") {
+      panelOrtografia.classList.add("oculto");
+    }
+  }
+}
+
+function renderizarErroresOrtograficos(textoCompleto, coincidencias) {
+  listaOrtografia.innerHTML = "";
+
+  if (coincidencias.length === 0) {
+    panelOrtografia.classList.remove("oculto", "revisando");
+    panelOrtografia.classList.add("limpio");
+    estadoOrtografia.textContent = "✓ Ortografía y tildes correctas.";
+    return;
+  }
+
+  panelOrtografia.classList.remove("oculto", "revisando", "limpio");
+  estadoOrtografia.textContent = `Se encontraron ${coincidencias.length} error(es) de ortografía o tilde:`;
+
+  coincidencias.forEach((error) => {
+    const palabraMal = textoCompleto.substr(error.offset, error.length);
+    const li = document.createElement("li");
+    li.className = "item-ortografia";
+
+    const detalle = document.createElement("div");
+    detalle.className = "detalle-palabra";
+    detalle.innerHTML = `<span class="palabra-mal">${escaparHTML(palabraMal)}</span> — ${escaparHTML(error.message)}`;
+    li.appendChild(detalle);
+
+    const contenedorChips = document.createElement("div");
+    contenedorChips.className = "sugerencias-chips";
+
+    const sugerencias = (error.replacements || []).slice(0, 4);
+    sugerencias.forEach((sug) => {
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "btn-sugerencia";
+      btn.textContent = sug.value;
+      btn.title = `Reemplazar "${palabraMal}" por "${sug.value}"`;
+      btn.addEventListener("click", () => {
+        aplicarCorreccion(error.offset, error.length, sug.value);
+      });
+      contenedorChips.appendChild(btn);
+    });
+
+    const btnIgnorar = document.createElement("button");
+    btnIgnorar.type = "button";
+    btnIgnorar.className = "btn-ignorar";
+    btnIgnorar.textContent = "Ignorar";
+    btnIgnorar.addEventListener("click", () => {
+      palabrasIgnoradas.add(palabraMal.toLowerCase());
+      revisarOrtografiaEnTiempoReal();
+    });
+    contenedorChips.appendChild(btnIgnorar);
+
+    li.appendChild(contenedorChips);
+    listaOrtografia.appendChild(li);
+  });
+}
+
+function aplicarCorreccion(offset, length, reemplazo) {
+  const textoActual = inputDescripcion.value;
+  const nuevoTexto =
+    textoActual.slice(0, offset) +
+    reemplazo +
+    textoActual.slice(offset + length);
+
+  inputDescripcion.value = nuevoTexto;
+  inputDescripcion.focus();
+  revisarOrtografiaEnTiempoReal();
+}
+
+function escaparHTML(texto) {
+  const div = document.createElement("div");
+  div.textContent = texto;
+  return div.innerHTML;
+}
+
+// Eventos en tiempo real
 inputNombre.addEventListener("input", validarNombre);
 inputNombre.addEventListener("blur", validarNombre);
 
 inputCorreo.addEventListener("input", validarCorreo);
 inputCorreo.addEventListener("blur", validarCorreo);
 
-inputDescripcion.addEventListener("input", validarDescripcion);
-inputDescripcion.addEventListener("blur", validarDescripcion);
+inputDescripcion.addEventListener("input", () => {
+  validarDescripcionBasica();
+  clearTimeout(temporizadorOrtografia);
+  temporizadorOrtografia = setTimeout(revisarOrtografiaEnTiempoReal, 450);
+});
+
+inputDescripcion.addEventListener("blur", () => {
+  clearTimeout(temporizadorOrtografia);
+  revisarOrtografiaEnTiempoReal();
+});
 
 function limpiarEstilosValidacion() {
   ["nombre", "correo", "descripcion"].forEach((id) => {
@@ -154,17 +286,20 @@ function limpiarEstilosValidacion() {
     span.textContent = "";
   });
   contadorDescripcion.textContent = "0 / 5000";
+  palabrasIgnoradas.clear();
+  ocultarPanelOrtografia();
 }
 
 formulario.addEventListener("submit", async function (e) {
   e.preventDefault();
 
+  await revisarOrtografiaEnTiempoReal();
+
   const nombreOk = validarNombre();
   const correoOk = validarCorreo();
-  const descripcionOk = validarDescripcion();
+  const descripcionOk = validarDescripcionBasica();
 
   if (!nombreOk || !correoOk || !descripcionOk) {
-    // Enfocar el primer campo con error
     if (!nombreOk) inputNombre.focus();
     else if (!correoOk) inputCorreo.focus();
     else inputDescripcion.focus();
@@ -190,7 +325,6 @@ formulario.addEventListener("submit", async function (e) {
     formulario.reset();
     limpiarEstilosValidacion();
 
-    // Modal animado con check verde, botón de cierre y autocierre en 3 segundos
     Swal.fire({
       icon: "success",
       title: "¡Mensaje enviado!",
