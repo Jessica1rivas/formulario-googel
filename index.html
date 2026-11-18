@@ -4,54 +4,113 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Formulario de contacto</title>
+    <title>Contáctanos</title>
     <link rel="stylesheet" href="assets/style.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 
 <body>
 
+    <!-- Formas geométricas grandes del fondo (estilo ilustración) -->
+    <div class="fondo-formas" aria-hidden="true">
+        <div class="forma-cruz-amarilla"></div>
+        <div class="forma-aro-celeste"></div>
+    </div>
+
+    <!-- Botón flotante para volver a ver la guía paso a paso -->
+    <button type="button" class="btn-ayuda-flotante" id="btnIniciarGuia" title="Ver guía paso a paso">
+        ? Guía paso a paso
+    </button>
+
+    <!-- Fondo oscuro del tutorial paso a paso -->
+    <div class="tour-overlay oculto" id="tourOverlay"></div>
+
+    <!-- Tarjeta flotante de instrucciones del paso a paso -->
+    <div class="tour-tooltip oculto" id="tourTooltip" role="dialog" aria-live="polite">
+        <div class="tour-cabecera">
+            <span class="tour-paso-badge" id="tourPasoBadge">Paso 1 de 4</span>
+            <button type="button" class="tour-cerrar" id="tourCerrar" title="Cerrar guía">&times;</button>
+        </div>
+        <h3 id="tourTitulo">Escribe tu nombre</h3>
+        <p id="tourTexto">Ingresa tu nombre y apellido para saber quién nos escribe.</p>
+        <div class="tour-acciones">
+            <button type="button" class="tour-btn-saltar" id="tourSaltar">Saltar</button>
+            <button type="button" class="tour-btn-siguiente" id="tourSiguiente">Siguiente &rarr;</button>
+        </div>
+    </div>
+
     <main class="contenedor">
 
         <section class="formulario">
 
+            <!-- Figuras geométricas decorativas dentro de la tarjeta blanca -->
+            <span class="deco deco-x-1" aria-hidden="true">✕</span>
+            <span class="deco deco-o-1" aria-hidden="true"></span>
+            <span class="deco deco-x-2" aria-hidden="true">✕</span>
+            <span class="deco deco-plus-1" aria-hidden="true">+</span>
+            <span class="deco deco-o-2" aria-hidden="true"></span>
+            <span class="deco deco-o-3" aria-hidden="true"></span>
+            <span class="deco deco-x-3" aria-hidden="true">✕</span>
+            <span class="deco deco-x-4" aria-hidden="true">✕</span>
+            <span class="deco deco-plus-2" aria-hidden="true">+</span>
+
             <div class="encabezado">
                 <h1>Contáctanos</h1>
-                <p>Envíanos tu consulta y nos pondremos en contacto contigo.</p>
             </div>
 
             <form id="formularioContacto" novalidate>
 
+                <!-- Campo 1: Nombre -->
                 <div class="campo" id="grupo-nombre">
-                    <label for="nombre">Nombre completo</label>
-                    <input type="text" id="nombre" name="nombre" placeholder="Ingresa tu nombre y apellido"
-                        maxlength="100" autocomplete="name" spellcheck="true" lang="es" required>
+                    <div class="input-pildora">
+                        <span class="icono-campo" aria-hidden="true">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                <circle cx="12" cy="7" r="4"></circle>
+                            </svg>
+                        </span>
+                        <input type="text" id="nombre" name="nombre" placeholder="Nombre completo"
+                            autocomplete="name" required>
+                    </div>
                     <span class="mensaje-error" id="error-nombre" aria-live="polite"></span>
                 </div>
 
+                <!-- Campo 2: Correo -->
                 <div class="campo" id="grupo-correo">
-                    <label for="correo">Correo electrónico</label>
-                    <input type="email" id="correo" name="correo" placeholder="ejemplo@gmail.com" autocomplete="email"
-                        spellcheck="false" required>
+                    <div class="input-pildora">
+                        <span class="icono-campo" aria-hidden="true">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="2" y="4" width="20" height="16" rx="2"></rect>
+                                <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path>
+                            </svg>
+                        </span>
+                        <input type="email" id="correo" name="correo" placeholder="Correo electrónico"
+                            autocomplete="email" required>
+                    </div>
                     <span class="mensaje-error" id="error-correo" aria-live="polite"></span>
                 </div>
 
+                <!-- Campo 3: Descripción -->
                 <div class="campo" id="grupo-descripcion">
-                    <div class="label-fila">
-                        <label for="descripcion">Descripción</label>
+                    <div class="meta-descripcion">
+                        <span class="badge-ortografia" id="badgeOrtografia"></span>
                         <span class="contador" id="contadorDescripcion">0 / 5000</span>
                     </div>
-                    <textarea id="descripcion" name="descripcion" lang="es" spellcheck="true"
-                        placeholder="Escribe aquí los detalles de tu mensaje..." maxlength="5000" required></textarea>
-                    <span class="mensaje-error" id="error-descripcion" aria-live="polite"></span>
 
-                    <!-- Panel de revisión ortográfica y tildes en tiempo real -->
-                    <div class="panel-ortografia oculto" id="panelOrtografia" aria-live="polite">
-                        <div class="ortografia-cabecera">
-                            <span id="estadoOrtografia">Revisando ortografía y tildes...</span>
-                        </div>
-                        <ul class="lista-errores-ortografia" id="listaOrtografia"></ul>
+                    <div class="editor-enriquecido" id="editorEnriquecido">
+                        <span class="icono-campo icono-textarea" aria-hidden="true">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                                <line x1="8" y1="9" x2="16" y2="9"></line>
+                                <line x1="8" y1="13" x2="13" y2="13"></line>
+                            </svg>
+                        </span>
+                        <div class="capa-resaltado" id="capaResaltado" aria-hidden="true"></div>
+                        <textarea id="descripcion" name="descripcion" lang="es" spellcheck="true"
+                            placeholder="Descripción del mensaje..." required></textarea>
                     </div>
+
+                    <span class="mensaje-error" id="error-descripcion" aria-live="polite"></span>
                 </div>
 
                 <!-- Campo oculto antispam -->
@@ -60,8 +119,9 @@
                     <input type="text" id="website" name="website" tabindex="-1" autocomplete="off">
                 </div>
 
-                <button type="submit" id="btnEnviar">
-                    Enviar mensaje
+                <button type="submit" id="btnEnviar" class="btn-enviar-estilo">
+                    <span id="textoBotonEnviar">ENVIAR</span>
+                    <span class="flecha-amarilla" aria-hidden="true">&rarr;</span>
                 </button>
 
             </form>
@@ -69,6 +129,28 @@
         </section>
 
     </main>
+
+    <!-- Panel ortográfico flotante (sobrepuesto, no mueve el formulario) -->
+    <aside class="panel-lateral-flotante oculto" id="panelLateral" aria-live="polite">
+        <div class="lateral-cabecera">
+            <div>
+                <h2>Sugerencias de ortografía</h2>
+                <p id="subtituloOrtografia">Revisión opcional de tildes</p>
+            </div>
+            <div class="lateral-botones">
+                <button type="button" class="btn-corregir-todo" id="btnCorregirTodo">
+                    Corregir todo
+                </button>
+                <button type="button" class="btn-cerrar-panel" id="btnCerrarPanel" title="Ocultar sugerencias">
+                    &times;
+                </button>
+            </div>
+        </div>
+
+        <div class="lateral-cuerpo">
+            <ul class="lista-errores-ortografia" id="listaOrtografia"></ul>
+        </div>
+    </aside>
 
     <script src="assets/main.js"></script>
 
