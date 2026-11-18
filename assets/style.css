@@ -16,7 +16,7 @@ body {
 
 .contenedor {
   width: 100%;
-  max-width: 550px;
+  max-width: 560px;
 }
 
 .formulario {
@@ -95,11 +95,12 @@ body {
 }
 
 .campo textarea {
-  height: 140px;
+  height: 145px;
   resize: vertical;
+  line-height: 1.55;
 }
 
-/* Estados de validación en tiempo real */
+/* Estados de validación */
 .campo.invalido input,
 .campo.invalido textarea {
   border-color: #dc2626;
@@ -123,6 +124,122 @@ body {
   font-weight: 500;
   margin-top: 6px;
   min-height: 16px;
+}
+
+/* Panel de corrección ortográfica en tiempo real */
+.panel-ortografia {
+  margin-top: 8px;
+  padding: 12px 14px;
+  border-radius: 9px;
+  border: 1px solid #fecaca;
+  background: #fff5f5;
+  font-size: 13px;
+}
+
+.panel-ortografia.oculto {
+  display: none;
+}
+
+.panel-ortografia.revisando {
+  border-color: #cbd5e1;
+  background: #f8fafc;
+  color: #475569;
+}
+
+.panel-ortografia.limpio {
+  border-color: #bbf7d0;
+  background: #f0fdf4;
+  color: #15803d;
+}
+
+.ortografia-cabecera {
+  font-weight: 600;
+  color: #b91c1c;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.panel-ortografia.revisando .ortografia-cabecera {
+  color: #475569;
+}
+
+.panel-ortografia.limpio .ortografia-cabecera {
+  color: #15803d;
+}
+
+.lista-errores-ortografia {
+  list-style: none;
+  margin-top: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.lista-errores-ortografia:empty {
+  display: none;
+}
+
+.item-ortografia {
+  background: #ffffff;
+  border: 1px solid #fee2e2;
+  border-radius: 7px;
+  padding: 8px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.detalle-palabra {
+  color: #334155;
+  font-size: 12.5px;
+}
+
+.palabra-mal {
+  color: #dc2626;
+  font-weight: 700;
+  text-decoration: wavy underline #dc2626;
+  background: #fee2e2;
+  padding: 1px 5px;
+  border-radius: 4px;
+}
+
+.sugerencias-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+}
+
+.btn-sugerencia {
+  background: #16a34a;
+  color: #ffffff;
+  border: none;
+  border-radius: 5px;
+  padding: 4px 9px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-sugerencia:hover {
+  background: #15803d;
+}
+
+.btn-ignorar {
+  background: transparent;
+  color: #64748b;
+  border: 1px solid #cbd5e1;
+  border-radius: 5px;
+  padding: 3px 8px;
+  font-size: 11.5px;
+  cursor: pointer;
+}
+
+.btn-ignorar:hover {
+  background: #f1f5f9;
+  color: #334155;
 }
 
 button[type="submit"] {
@@ -159,7 +276,6 @@ button[type="submit"]:disabled {
   left: -9999px;
 }
 
-/* Personalización suave del modal SweetAlert2 */
 .swal2-popup {
   border-radius: 16px !important;
   font-family: "Segoe UI", Arial, sans-serif !important;
